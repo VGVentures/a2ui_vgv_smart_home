@@ -27,7 +27,7 @@ dependencies:
   home_repository:
     path: packages/home_repository
   http: ^1.2.0
-  intl: ^0.20.2
+  intl: ^0.20.3
   material_symbols_icons: ^4.2960.0
   meta: ^1.18.0
   # Microphone capture for voice input, resampled to the 16 kHz /transcribe
