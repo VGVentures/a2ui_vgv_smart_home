@@ -1,0 +1,105 @@
+---
+# Layout prompt for the panel.
+#
+# This dotprompt asset is the layout: the grid the components are placed on,
+# the proportion each card is built for, and the rules every screen follows.
+# It belongs to the demo's wall panel, not to the catalog, so it lives with the
+# other backend assets and is rendered at startup between the A2UI mechanics
+# prompt and the catalog prompt.
+#
+# The proportions are the ones on the Figma component catalog and the screens
+# built from it. They are written once, in the catalog's `GenUiComponent.fit`,
+# and this file only says them: the backend checks every reply against the same
+# sizes (`LayoutValidator`) and the frontend draws exactly them. Change a size in
+# the catalog, never here.
+#
+# Handlebars variables:
+#   cardFits - one line per card with the proportions it is built for, rendered
+#              from the components' own `fit`
+---
+
+## The grid
+
+The card area is a grid of 12 columns and 2 rows. Think in proportions of it,
+never in sizes: 4 of 12 columns is a third of the width, 6 is a half, 8 is two
+thirds and 12 is all of it. A card is half tall (one row) or full height (both
+rows). The `ActionChips` row sits below the area and is not part of the grid.
+
+A card's width is its `weight`: the number of the 12 columns it spans. Every
+card is built for particular proportions and for no others. Never give a card a
+`weight` it does not list, and never stretch a card to fill a gap: pick other
+cards, or other spans of the cards you have, that fill the row.
+
+{{{cardFits}}}
+
+## Putting a screen together
+
+A screen is a root `Column` that holds the cards and ends with the
+`ActionChips`. The cards are laid out in one of two ways.
+
+**Two rows.** The root holds two `Row`s, one for each row of the grid. Each `Row`
+holds one to three cards, and the `weight`s in it add up to exactly 12.
+
+```
+root (Column)  children: ["row1", "row2", "chips"]
+row1 (Row)     children: ["trip", "charge"]       weights 7, 5
+row2 (Row)     children: ["a", "b", "c"]          weights 4, 4, 4
+chips          ActionChips
+```
+
+**A full height card.** When the screen has a full height card (a `PlanTimeline`
+with `density: detailed`, a `ShoppingList`, or an urgent `HeadsUpCard`), the
+root holds a single `Row` with the whole area. It has two children: the full
+height card, with its `weight`, and one `Column` beside it. That `Column` has the
+`weight` of the columns the card leaves (12 less its own), and holds one or two
+`Row`s of half tall cards. The `weight`s in each of those `Row`s add up to the
+`Column`'s `weight`, in the same way the `weight`s of a `Row` of the whole grid
+add up to 12.
+
+```
+root (Column)  children: ["body", "chips"]
+body (Row)     children: ["list", "rest"]
+list           ShoppingList, weight 5
+rest (Column)  weight 7   children: ["rest1", "rest2"]
+rest1 (Row)    children: ["oven", "fridge"]       weights 4, 3
+rest2 (Row)    children: ["lights", "scene"]      weights 3, 4
+chips          ActionChips
+```
+
+Spans that add up to 12 with the cards of the catalog: 7 and 5, 8 and 4, 4 and
+8, 5 and 7, three of 4, or a 3, a 4 and a 5 in any order. Beside a full height
+card the rows add up to what it leaves: 7 is a 7, or a 4 and a 3; 8 is an 8, or
+two of 4, or a 3 and a 5; 4 is a single card of 4. A `DeviceCard` is the card
+that fits most sums, because it is built for 3, 4 or 5. A row of two cards
+never adds up to 12 unless one of them is a 7 or an 8, so two cards of 4 or 5
+need a third.
+
+Rules for every screen:
+
+- End the root with exactly one `ActionChips`, below the cards, with 1 to 3
+  suggested next steps, unless the screen has an urgent `HeadsUpCard`, which
+  has none. It is the root's last child; defining it without listing it in
+  `root.children` means it is never shown. Do not forget it.
+- Fill the grid. Every row adds up to its columns, with no gap and no card
+  stretched. A screen is usually four or five cards, at most six, counting the
+  `HeadsUpCard` and the `ChangeSummary`; the `ActionChips` row is not one. Send
+  the cards that matter to this person, most important first. If they leave
+  the grid short, the panel adds devices to fill it after your cards, so do not
+  add a device only to fill space, and do not leave one of your cards out to
+  make the sums work.
+- The `HeadsUpCard` and the `ChangeSummary` lead: they go in the top row. At most
+  one of each.
+- An urgent `HeadsUpCard` (`variant: urgent`) is the full height card of its
+  screen, 8 columns wide, with a `Column` of 4 beside it.
+- A full height card is the only one on the screen: never two. When the screen
+  wants both the `ShoppingList` and a `PlanTimeline`, the list is the full
+  height card and the plan is `density: compact`, in a half tall cell beside
+  it.
+- Set a `weight` on every card in a `Row`, and on the `Column` beside the full
+  height card. A card with none is drawn at the span it is best built for.
+- Rank the cards first, then place them: the higher a card ranks, the bigger
+  the cell it gets, among the cells it is built for. When the ranked cards do
+  not fit the grid, the lowest ranked are left out.
+- Every id a `Column` or `Row` lists must be defined, and every component you
+  define must be listed by exactly one parent.
+- Give every component a stable id and reuse it when you re-send it.

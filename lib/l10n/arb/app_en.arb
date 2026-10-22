@@ -1,0 +1,125 @@
+{
+    "@@locale": "en",
+    "appTitle": "A2UI VGV Smart Home",
+    "@appTitle": {
+        "description": "Browser tab title of the demo"
+    },
+    "brandLabel": "Very Good Ventures, A2UI Smart Home",
+    "@brandLabel": {
+        "description": "What a screen reader reads for the brand lockup in the header"
+    },
+    "askHint": "How can I help, {name}?",
+    "@askHint": {
+        "description": "The hint of the ask field, naming the user",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "dashboardFailed": "Could not build the dashboard.",
+    "apiKeyTitle": "Add your Gemini API key",
+    "@apiKeyTitle": {
+        "description": "Title of the dialog that asks for the person's own Gemini API key"
+    },
+    "apiKeyBody": "The demo runs on your own key. It stays in this browser tab, is sent with each request to call Gemini, and the server never stores it.",
+    "@apiKeyBody": {
+        "description": "Body of the dialog that asks for the Gemini API key"
+    },
+    "apiKeyLink": "Get a key at aistudio.google.com/apikey",
+    "@apiKeyLink": {
+        "description": "Link in the Gemini API key dialog that opens Google AI Studio"
+    },
+    "apiKeyLabel": "Gemini API key",
+    "@apiKeyLabel": {
+        "description": "Label of the Gemini API key field"
+    },
+    "changeKeyTooltip": "Change Gemini API key",
+    "@changeKeyTooltip": {
+        "description": "Tooltip of the settings button, which reopens the key dialog"
+    },
+    "@dashboardFailed": {
+        "description": "Shown when no dashboard could be generated"
+    },
+    "usersLoadFailed": "Could not load the household.",
+    "@usersLoadFailed": {
+        "description": "Shown when the list of users fails to load"
+    },
+    "retryButton": "Try again",
+    "@retryButton": {
+        "description": "Text of the button that retries loading users"
+    },
+    "voiceStartTooltip": "Tap to speak",
+    "@voiceStartTooltip": {
+        "description": "Tooltip of the microphone button"
+    },
+    "voiceSendTooltip": "Tap to send",
+    "@voiceSendTooltip": {
+        "description": "Tooltip of the microphone button while it is listening"
+    },
+    "voiceListeningTo": "Listening to {name}",
+    "@voiceListeningTo": {
+        "description": "The label of the card shown while the user speaks, naming them",
+        "placeholders": {
+            "name": {
+                "type": "String"
+            }
+        }
+    },
+    "microphonePermissionTitle": "Use the microphone",
+    "@microphonePermissionTitle": {
+        "description": "Title of the dialog shown before the browser asks for the microphone"
+    },
+    "microphonePermissionBody": "Your browser will ask for permission to use the microphone. Allow it, then tap the button and speak.",
+    "@microphonePermissionBody": {
+        "description": "Body of the dialog shown before the browser asks for the microphone"
+    },
+    "continueButton": "Continue",
+    "@continueButton": {
+        "description": "Text of the button that goes on to the browser's microphone prompt"
+    },
+    "cancelButton": "Cancel",
+    "@cancelButton": {
+        "description": "Text of the button that closes a dialog without going on"
+    },
+    "microphoneUnavailable": "The microphone isn't available. Allow it in your browser's site settings and try again.",
+    "@microphoneUnavailable": {
+        "description": "Shown when the browser refuses the microphone"
+    },
+    "transcriptionFailed": "Couldn't turn that into text. Try again.",
+    "@transcriptionFailed": {
+        "description": "Shown when the spoken command can't be transcribed"
+    },
+    "actionCompleted": "Completed",
+    "@actionCompleted": {
+        "description": "The label the toast shows once a request has succeeded"
+    },
+    "actionFailed": "Something went wrong. Try again.",
+    "@actionFailed": {
+        "description": "Shown under the label of a request that failed, when the server gave no reason"
+    },
+    "timelineMorning": "Morning",
+    "@timelineMorning": {
+        "description": "The label of the timeline button that goes to the morning"
+    },
+    "timelineDay": "Day",
+    "@timelineDay": {
+        "description": "The label of the timeline button that goes to the day"
+    },
+    "timelineSunset": "Sunset",
+    "@timelineSunset": {
+        "description": "The label of the timeline button that goes to the sunset"
+    },
+    "timelineEvening": "Evening",
+    "@timelineEvening": {
+        "description": "The label of the timeline button that goes to the evening"
+    },
+    "timelineFailed": "Can't reach the demo clock",
+    "@timelineFailed": {
+        "description": "Shown by the timeline when the backend does not answer"
+    },
+    "timelineLabel": "Demo time",
+    "@timelineLabel": {
+        "description": "What a screen reader reads for the timeline control"
+    }
+}

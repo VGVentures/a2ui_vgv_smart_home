@@ -1,0 +1,48 @@
+{
+  "source": "Synthetic to-do lists. Not Google Home data.",
+  "lists": [
+    {
+      "id": "shopping",
+      "title": "Shopping",
+      "subtitle": "Missing from the fridge \u00b7 dinner for 6",
+      "dueBeforeStep": "prep",
+      "owners": [
+        "ana"
+      ],
+      "shareTarget": "marco",
+      "sharedWith": [],
+      "items": [
+        {
+          "id": "lamb",
+          "label": "Rack of lamb",
+          "detail": "2 racks",
+          "checked": true
+        },
+        {
+          "id": "wine",
+          "label": "Red wine",
+          "detail": "2 bottles",
+          "checked": true
+        },
+        {
+          "id": "thyme",
+          "label": "Fresh thyme",
+          "detail": "1 bunch",
+          "checked": false
+        },
+        {
+          "id": "shallots",
+          "label": "Shallots",
+          "detail": "6",
+          "checked": true
+        },
+        {
+          "id": "water",
+          "label": "Sparkling water",
+          "detail": "2 bottles",
+          "checked": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "source": "Google Maps",
+  "timeZone": "America/Chicago",
+  "trips": [
+    {
+      "id": "trip_pickup",
+      "userId": "marco",
+      "title": "School pickup, then bakery",
+      "leaveBy": "2026-10-10T16:55:00",
+      "stops": [
+        {
+          "name": "School",
+          "arriveBy": "2026-10-10T17:15:00",
+          "driveMinutes": 20
+        },
+        {
+          "name": "Bakery",
+          "arriveBy": "2026-10-10T17:45:00",
+          "driveMinutes": 15
+        },
+        {
+          "name": "Home",
+          "arriveBy": "2026-10-10T18:10:00",
+          "driveMinutes": 25
+        }
+      ],
+      "totalMiles": 24,
+      "slackMinutes": 20
+    }
+  ]
+}

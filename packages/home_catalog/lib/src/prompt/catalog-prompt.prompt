@@ -1,0 +1,146 @@
+---
+# Catalog usage prompt for your GenUI app.
+#
+# This dotprompt asset describes the relationships between the components in this
+# catalog — when to use each one, how they compose — so the model picks the
+# right component for the job. It is the middle layer between the A2UI mechanics
+# prompt (how to emit A2UI JSON, injected by the server) and the system prompt
+# (your app's voice and audience). Keep it about component selection: do not
+# restate A2UI/JSON mechanics here, and do not write voice or audience here.
+#
+# It lives in the shared catalog package so it travels with the components it
+# describes. The package exports its location as `catalogPromptAssetUri`; the
+# API server resolves that, renders this asset once at startup, and prepends it
+# as a system message after the A2UI instructions.
+#
+# It ships empty, so by default no system message is sent for it. Write the body
+# below the closing delimiter to describe your catalog, or run the
+# `build_genui_catalog_prompt` MCP prompt to generate it from your components.
+#
+# These Handlebars variables are always available in the body:
+#   catalogId       - the catalog id the app renders against
+#   componentNames  - backtick-wrapped, comma-separated component names
+# Handlebars escapes values by default; use triple braces for raw injection.
+# Do not put secrets here; this file is version-controlled.
+---
+
+Catalog `{{catalogId}}` renders the A2UI VGV Smart Home panel for a landscape kitchen
+wall tablet. Available components: {{{componentNames}}}.
+
+## Choosing what leads
+
+Decide which cards the screen shows before you lay anything out; the layout
+prompt says where they go and how big each one is. Call `get_home_activity`
+first and rank the candidates in this order:
+
+1. What just happened (`recent`, newest first). A request the user just made
+   (`kind: change`) or something that changed on its own (the oven reached its
+   temperature, a delivery arrived, the doorbell rang). It leads, and the card
+   for it carries a tag (`updated`, `moved`, `new`) or is the `ChangeSummary`.
+2. What is urgent: a moment in `next` with `urgent: true` (for example the
+   shopping list due before the cooking starts) ranks with what just happened,
+   above the rest of `next`. Show the card it names (`listId` is a
+   `ShoppingList`), with every item of the list, ticked or not.
+3. What is next (`next`, soonest first). The card that answers the next step or
+   event of the next hour: the plan, the oven, the trip.
+4. The person's anchor: what their role cares about most (the host's dinner
+   countdown and plan; the logistics person's trip and car).
+5. Everything else, to fill the grid. A device with nothing going on goes
+   first when you run out of room.
+
+Fill the cards from the data, not from memory. Entries, times and labels are
+copied from the tool results exactly as they are: a plan lists only the steps
+and events still ahead, never one that is already over, in order, up to what
+its cell shows, each with the `time`,
+`title`, `detail` and `icon` the step has, a date as `subtitle`, and the time
+now as its `tag`.
+
+You never write an action's name, context or label. Controls say what they act
+on with typed props (`deviceId`, `sceneId`, `listId`, item `id`s) and the app
+builds the press from them. Use ids exactly as the tools return them
+(`get_google_home_data`, `get_todo_lists`); never invent or rename one. A press on an
+id that does not exist fails.
+
+A chip or a heads-up button carries one typed `action`, exactly one of:
+`{"command": {"deviceId": "oven", "command": "start"}}` (one command on one
+device, from `on`, `off`, `start`, `stop`, `open`, `close`, `lock`, `unlock`,
+`add_time`, `set_level`, `set_temperature`, `up`, `down`),
+`{"scene": "<sceneId>"}`, `{"undo": true}`, or `{"ask": "Tell guests dinner is at
+8:00"}`. Use `ask` for anything that is not one device command or a scene
+(telling someone, replying, several devices at once, anything that needs
+judgment); the text is sent to you as if the user had typed it. The chip's or
+button's visible `label` is what the user sees while it runs, so make it an
+imperative phrase that reads on its own ("Preheat oven"). Never offer a
+command whose result is already the device's state in the data you read this
+turn (lock a door that is `locked`, switch on what is `on`, preheat an oven
+that is preheating): pick the next step that still changes something, or no
+chip.
+
+- `CountdownCard`: one upcoming calendar event with a big countdown, for when a
+  single event dominates the next few hours (dinner party, pickup). Send
+  `startsAt` as ISO 8601 with offset; never send the countdown, the client
+  computes and ticks it. When the event moves, re-send it with the new
+  `startsAt` and `subtitle`. Default tone `lighting`.
+- `PlanTimeline`: the ordered plan for the evening, 1 to 5 entries in time
+  order. Use it when there is more than one dated thing today or the plan just
+  changed; for a single event use `CountdownCard`. `density: detailed` (the
+  default) has icon bubbles and a detail line and is the tall card;
+  `density: compact` shows times only and is the half tall one. When entries move, set
+  `previousTime` on them (and `changedBy` when someone else moved them), add
+  an `updated` tag, and mark the others `status: unchanged` when shown to a
+  second person.
+- `DeviceCard`: one device's state (oven, fridge, thermostat, lights, blinds,
+  lock, coffee maker, weather). `deviceId` is required and is the device's id.
+  Icon, `name`, `status`, a hero `value` with small `unit`, optional `delta`.
+  One `control`: `toggle`, `stepper`, `button` (needs a `label` and the
+  `command` it runs) or `none`; the app knows what each does for that device.
+  Pick `tone` by device: oven, fridge, speaker, timer, coffee neutral; lights
+  and blinds lighting; thermostat climate; energy meter and charger energy;
+  locks, garage and doorbell security; outside weather weather. Send every prop
+  as a literal value read from the device data; do not use data-model bindings.
+  What `isActive` and a toggle's `on` mean follows the device: lit, running,
+  open (blinds, garage door), locked (locks), armed, or charging. After a press,
+  show the new state without a `tag`. A `tag` ("Updated just now") sits beside
+  the icon and marks a device that changed on its own; the control stays. Set
+  `isLoading` only on a device whose command is still running. Never use a red
+  `DeviceCard` for a warning; use a `HeadsUpCard`.
+- `ActionChips`: the bottom "Suggested" row, 1 to 3 chips. Each is a verb-first
+  next step of 22 characters or fewer tied to the person, the plan and the
+  device state, and re-emitted after a plan change ("Tell guests 8:00", "Undo
+  change"). The first chip is `isPrimary`. Each chip has a typed `action`.
+- `TripCard`: where the user must be and when to leave: `leaveBy` plus up to 3
+  stops, each with an `icon` (`school`, `cake`, `home`). After a delay, send `previousLeaveBy`, an
+  `updated` tag and a `footer` with tone `warning` and icon `traffic`. A stop
+  with slack gets `emphasis: good`. For something under way, such as a delivery
+  out for delivery, add `progress` (`percent` 0 to 100 and an `icon` such as
+  `delivery`): the card gets a track with the icon at that point, shows the
+  last two stops (where it left, where it is going) and drops `previousLeaveBy`. Plans and pickups come from Calendar and
+  Maps, not Home devices.
+- `ChargeCard`: the car, always energy tone. Send `percent`,
+  `range`, `summary`, and a `window` with `windowIcon` `clock` (a window) or
+  `savings` (a saving). Below 30% the bar turns warm, so also add an
+  `HeadsUpCard`.
+- `SceneCard`: a named group of device settings run with one tap
+  (`sceneId` is required). `state: ready` shows Start; `running` shows an On
+  tag and no button. Up to 4 `settings`. Default tone `lighting`.
+- `HeadsUpCard`: a timely item (traffic, rain, a hot room), with a `source`, a headline `title`, a one-line `message` that gives the
+  reason, a `timestamp` and up to 2 `actions`; the first is primary. The
+  `variant` is `headsUp` (amber, the default) or `urgent` (red, only for
+  something to act on now, such as an open fridge door). Where the layout allows only
+  one action, put the other in `ActionChips`. Each action has
+  a `label` and a typed `action`. When the server finishes an action, re-send
+  the card with that action `state: done` and a past-tense label ("Blinds
+  closed").
+- `ChangeSummary`: confirms what a request changed, only right after it, at most
+  one. It is the highlight of that screen and it leads. An `eyebrow` ("Done · from your request at 5:45 PM"), a
+  `title` ("Dinner moved to 8:00 PM") and 1 to 4 `changes`, each with `icon`,
+  `label`, `value` and either `previous` ("was 6:00 PM") or `note`. It has no
+  buttons; pair it with `ActionChips` such as "Tell guests 8:00" and "Undo
+  change".
+- `ShoppingList`: a checklist of 2 to 5 items (never fewer than two), such as shopping for tonight. Send every item of the list, ticked or not: ticked ones stay, with `items[].checked` as a literal boolean, so the person sees the whole list and what is left.
+  `listId` is required and each item `id` is the item's id from the list.
+  Ticking flips it at once. `footerAction` is optional: a `label` and `icon`
+  that share the list.
+
+Keep each screen to what one person needs right now, and let two people on the
+same panel get visibly different layouts.

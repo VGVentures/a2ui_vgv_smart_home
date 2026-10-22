@@ -1,0 +1,750 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "A2UI VGV Smart Home API",
+    "version": "1.0.0",
+    "description": "Backend API for generating validated A2UI responses. Download this document and use any OpenAPI 3.1-compatible generator to create a client or an alternative server implementation."
+  },
+  "servers": [
+    {
+      "url": "/",
+      "description": "The A2UI VGV Smart Home backend"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Check server health",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The server is healthy.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/generate": {
+      "post": {
+        "operationId": "generateResponse",
+        "summary": "Generate a validated A2UI response",
+        "security": [
+          {
+            "geminiKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The validated model response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ]
+      }
+    },
+    "/action": {
+      "post": {
+        "operationId": "applyAction",
+        "summary": "Apply a component press, then generate the updated A2UI response",
+        "description": "Code wrote the action: the model only chose targets (ids and closed enums, validated against the real devices while the response was generated) and the client built the event. Applies it to the device state machine deterministically, with no model in the loop, then runs the same generation as `POST /generate` so the model composes the updated surface from the fresh data. A rejected command is a `404` or `409` whose `message` is written for the user. Generation failures map exactly as they do for `/generate`.",
+        "security": [
+          {
+            "geminiKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The validated model response, composed after the command was applied.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/UnprocessableEntity"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          },
+          "502": {
+            "$ref": "#/components/responses/BadGateway"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ]
+      }
+    },
+    "/transcribe": {
+      "get": {
+        "operationId": "transcribe",
+        "summary": "Stream audio and receive its transcript",
+        "description": "A WebSocket. OpenAPI cannot describe the messages, so they are listed here and in the backend README's \"Voice transcription\" section.\n\nConnect with two subprotocols: `genui.transcribe.v1` and your Gemini API key. The server opens the transcription session with that key and does not keep it. The server selects `genui.transcribe.v1`.\n\nClient to server: binary frames of raw 16 kHz mono 16-bit little-endian PCM, then `{\"type\": \"stop\"}` as a text frame when the user stops talking. Audio sent before the transcription provider is ready is held by the server and sent once it is.\n\nServer to client: `{\"type\": \"interim\", \"text\": \"...\"}` while the user talks, `{\"type\": \"final\", \"text\": \"...\"}` when an utterance is finished, and `{\"type\": \"error\", \"message\": \"...\"}` before closing on a failure.\n\nClose codes: `1000` after `stop` once the last transcript is sent, `4400` after a message the protocol does not define, `4502` when the transcription provider fails or is not ready within 5 seconds.",
+        "security": [
+          {
+            "webSocketGeminiKey": []
+          }
+        ],
+        "responses": {
+          "101": {
+            "description": "Switched to the WebSocket protocol."
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "description": "The browser's origin is not on the CORS allowlist."
+          },
+          "404": {
+            "description": "The request is not a WebSocket upgrade."
+          }
+        }
+      }
+    },
+    "/live": {
+      "get": {
+        "operationId": "live",
+        "summary": "Move the scenario clock and receive what changes",
+        "description": "A WebSocket that carries the scenario to the panel as it happens. OpenAPI cannot describe the messages, so they are listed here and in the backend README's \"Live connection\" section.\n\nConnect with two subprotocols: `genui.live.v1` and the visitor's session id. The server selects `genui.live.v1`. It needs no key, and it only carries the visitor's own world.\n\nClient to server: `{\"type\": \"clock\", \"to\": \"2026-10-10T16:45:00\"}` as a text frame moves the scenario clock, one frame per minute as the time dial turns.\n\nServer to client, to every connection: `{\"type\": \"clock\", \"now\": \"...\", \"start\": \"...\", \"end\": \"...\", \"timeZone\": \"...\"}` on connect and after the clock moves or the demo resets; `{\"type\": \"a2ui\", \"message\": {...}}` with an `updateDataModel` after a device's card values change; `{\"type\": \"inbox\", \"userId\": \"marco\", \"unread\": 1, \"item\": {...}}` when a notification lands for a user; `{\"type\": \"changed\", \"users\": [\"marco\"], \"reason\": \"plan_change\"}` when household data changed for those users outside the clock; and `{\"type\": \"error\", \"message\": \"...\"}` for a frame it cannot read, after which the connection stays open.",
+        "security": [],
+        "responses": {
+          "101": {
+            "description": "Switched to the WebSocket protocol."
+          },
+          "403": {
+            "description": "The browser's origin is not on the CORS allowlist."
+          },
+          "404": {
+            "description": "The request is not a WebSocket upgrade."
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "operationId": "listUsers",
+        "summary": "List the household users",
+        "description": "Returns the users a client can toggle between. Backed by the mock household database.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "operationId": "getUser",
+        "summary": "Get one user profile",
+        "security": [],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The user id, for example ana."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The full profile.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No user has that id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/clock": {
+      "get": {
+        "operationId": "getClock",
+        "summary": "Read the scenario clock",
+        "description": "The demo runs on a scenario clock that starts on Saturday at 7:30 AM and only moves when it is told to. Everything time dependent (the oven, the bakery order, the doorbell, the data the model reads) follows it.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The clock.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Clock"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ]
+      },
+      "post": {
+        "operationId": "setClock",
+        "summary": "Move the scenario clock",
+        "description": "Moves the clock and brings everything that follows from the time up to date before answering. Send exactly one of `to` or `minutes`. The clock stays between its start and its end.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClockRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The clock after the move.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Clock"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ]
+      }
+    },
+    "/reset": {
+      "post": {
+        "operationId": "resetDemo",
+        "summary": "Reset the demo",
+        "description": "Restores every document (devices, calendar, recipe plan, trips, bakery, to-do lists) and puts the scenario clock back at its start.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "The clock after the reset.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Clock"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        },
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SessionId"
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "geminiKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "The caller's own Gemini API key. The server uses it for that request only and never stores it."
+      },
+      "webSocketGeminiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Sec-WebSocket-Protocol",
+        "description": "The caller's own Gemini API key, offered as a second subprotocol after the protocol name. Browsers cannot set an Authorization header on a WebSocket."
+      }
+    },
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok"
+          }
+        }
+      },
+      "GenerateMessage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "role",
+          "content"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "user",
+              "assistant"
+            ]
+          },
+          "content": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "GenerateRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "messages"
+        ],
+        "properties": {
+          "messages": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Conversation messages ordered from oldest to newest. The final message must have the user role.",
+            "items": {
+              "$ref": "#/components/schemas/GenerateMessage"
+            }
+          }
+        }
+      },
+      "ActionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "messages",
+          "action"
+        ],
+        "properties": {
+          "messages": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Same shape as `GenerateRequest.messages`. The final user message carries the interaction JSON.",
+            "items": {
+              "$ref": "#/components/schemas/GenerateMessage"
+            }
+          },
+          "action": {
+            "$ref": "#/components/schemas/Action"
+          }
+        }
+      },
+      "Action": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "context"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "enum": [
+              "toggle_device",
+              "adjust_device",
+              "run_device_action",
+              "run_scene",
+              "toggle_todo",
+              "share_list",
+              "undo_change"
+            ],
+            "description": "The command to apply. A name outside this list is a `400` (`That action isn't supported.`). `ask` is not an action name: the client sends it to `POST /generate` as a typed request."
+          },
+          "context": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Resolved values, never data-model paths. `progressLabel` is for the client and ignored. `toggle_device`: deviceId, on. `adjust_device`: deviceId, direction (up or down). `run_device_action`: deviceId, command, optional value. `run_scene`: sceneId. `toggle_todo`: listId, itemId, checked. `share_list`: listId. `undo_change`: nothing. Keys and types are exact (booleans are booleans); a missing or mistyped field is a `400` (`That action couldn't be understood.`)."
+          }
+        }
+      },
+      "GenerateResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "text"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The validated A2UI JSON response."
+          }
+        }
+      },
+      "ApiError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "UserSummary": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "photo": {
+            "type": "string",
+            "description": "The base64 encoded JPEG profile photo. Absent for a user without one."
+          }
+        }
+      },
+      "UserListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "users"
+        ],
+        "properties": {
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSummary"
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "description": "A full user profile from users.json. Carries the summary fields plus age, story, interests and the context signals the dashboard reads.",
+        "required": [
+          "id",
+          "name",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "age": {
+            "type": "integer"
+          },
+          "optional": {
+            "type": "boolean"
+          },
+          "story": {
+            "type": "string"
+          },
+          "caresAbout": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dashboardLeadsWith": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "contextSignals": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deviceTypes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Clock": {
+        "type": "object",
+        "required": [
+          "now",
+          "start",
+          "end",
+          "timeZone"
+        ],
+        "properties": {
+          "now": {
+            "type": "string",
+            "description": "The scenario time, a local ISO 8601 time such as 2026-10-10T16:30:00."
+          },
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          },
+          "timeZone": {
+            "type": "string",
+            "example": "America/Chicago"
+          }
+        }
+      },
+      "ClockRequest": {
+        "type": "object",
+        "description": "Exactly one of `to` or `minutes`.",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "Move to this local ISO 8601 time."
+          },
+          "minutes": {
+            "type": "integer",
+            "description": "Move by this many minutes, negative goes back."
+          }
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "The request is invalid or its prompt was blocked.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "The Gemini API key is missing.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      },
+      "UnprocessableEntity": {
+        "description": "The generated response failed validation or was blocked.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "The server encountered an unexpected error.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      },
+      "BadGateway": {
+        "description": "The model provider or content screening service failed.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "The device, scene, list or list item named by the action does not exist.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "The command was rejected: the device is offline or cannot do it right now.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Every demo slot is taken by a visitor who is still connected.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ApiError"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "SessionId": {
+        "name": "X-Session-Id",
+        "in": "header",
+        "required": true,
+        "description": "A random id the client makes up once per visitor, 16 to 64 letters, digits, `_` or `-`. It names the visitor's own demo world: their household, clock and devices, which no other visitor shares. A world is built on the first request and dropped after about 30 minutes idle.",
+        "schema": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]{16,64}$"
+        }
+      }
+    }
+  }
+}
