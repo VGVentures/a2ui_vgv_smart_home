@@ -32,7 +32,7 @@ dependencies:
   meta: ^1.18.0
   # Microphone capture for voice input, resampled to the 16 kHz /transcribe
   # expects.
-  record: 7.1.1
+  record: 7.1.2
   # The /transcribe WebSocket.
   url_launcher: ^6.3.3
   web_socket_channel: 3.0.3
