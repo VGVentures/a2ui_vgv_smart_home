@@ -47,7 +47,7 @@ dev_dependencies:
   mocktail: ^1.0.5
   plugin_platform_interface: ^2.1.8
   url_launcher_platform_interface: ^2.3.2
-  very_good_analysis: ^10.3.0
+  very_good_analysis: ^11.0.0
   # Fake WebSocket peers for the /transcribe client tests.
   web_socket: 1.0.1
 
