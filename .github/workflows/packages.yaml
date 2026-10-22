@@ -30,7 +30,7 @@ jobs:
     uses: ./.github/workflows/flutter_version.yaml
 
   home_catalog:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v2.0.3
     with:
       working_directory: packages/home_catalog
       dart_sdk: "3.12.1"
@@ -39,7 +39,7 @@ jobs:
       min_coverage: 99
 
   home_timeline:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v2.0.3
     with:
       working_directory: packages/home_timeline
       dart_sdk: "3.12.1"
@@ -48,7 +48,7 @@ jobs:
       min_coverage: 95
 
   home_api_client:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v2.0.3
     with:
       working_directory: packages/home_api_client
       dart_sdk: "3.12.1"
@@ -57,7 +57,7 @@ jobs:
       min_coverage: 95
 
   home_repository:
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v2.0.3
     with:
       working_directory: packages/home_repository
       dart_sdk: "3.12.1"
