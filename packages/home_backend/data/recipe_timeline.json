@@ -1,0 +1,55 @@
+{
+  "timeZone": "America/Chicago",
+  "recipe": {
+    "name": "Rack of lamb",
+    "cookMinutes": 25,
+    "temperatureF": 400
+  },
+  "steps": [
+    {
+      "id": "prep",
+      "userId": "ana",
+      "at": "18:00",
+      "step": "Prep the rack",
+      "done": false,
+      "icon": "restaurant",
+      "detail": "Rack of lamb · 25 min at 400 °F"
+    },
+    {
+      "id": "preheat",
+      "userId": "ana",
+      "at": "18:30",
+      "step": "Preheat the oven to 400 °F",
+      "done": false,
+      "icon": "oven",
+      "detail": "Oven · 400 °F for the roast"
+    },
+    {
+      "id": "roast_in",
+      "userId": "ana",
+      "at": "18:45",
+      "step": "Roast goes in (25 min)",
+      "done": false,
+      "icon": "flame",
+      "detail": "25 minutes in the oven"
+    },
+    {
+      "id": "scene",
+      "userId": "ana",
+      "at": "18:45",
+      "step": "Start the dining scene",
+      "done": false,
+      "icon": "scene",
+      "detail": "Dining Room lights and music"
+    },
+    {
+      "id": "serve",
+      "userId": "ana",
+      "at": "19:15",
+      "step": "Serve",
+      "done": false,
+      "icon": "guests",
+      "detail": "6 confirmed"
+    }
+  ]
+}

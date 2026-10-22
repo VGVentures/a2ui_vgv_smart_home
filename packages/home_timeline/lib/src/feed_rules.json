@@ -1,0 +1,198 @@
+{
+  "recentMinutes": 30,
+  "nextMinutes": 120,
+  "rules": [
+    {
+      "source": "oven",
+      "at": "preheat",
+      "kind": "oven",
+      "summary": "Oven starts preheating to {target} °F",
+      "subject": "ana",
+      "deviceId": "oven"
+    },
+    {
+      "source": "oven",
+      "at": "ready",
+      "kind": "oven",
+      "summary": "Oven reaches {target} °F",
+      "subject": "ana",
+      "deviceId": "oven"
+    },
+    {
+      "source": "oven",
+      "at": "roastIn",
+      "kind": "oven",
+      "summary": "The roast goes in",
+      "subject": "ana",
+      "deviceId": "oven"
+    },
+    {
+      "source": "oven",
+      "at": "done",
+      "kind": "oven",
+      "summary": "The roast is done",
+      "subject": "ana",
+      "deviceId": "oven"
+    },
+
+    {
+      "source": "planStep",
+      "at": "at",
+      "kind": "plan",
+      "summary": "{step}",
+      "subject": "{userId}",
+      "stepId": "{stepId}"
+    },
+
+    {
+      "source": "todoList",
+      "at": "dueAt",
+      "kind": "todo",
+      "summary": [
+        "Urgent: finish \"{title}\" before {stepName}, {left} of {total} ",
+        "items still to get: {itemsLeft}. Show every item of the list, ticked ",
+        "or not"
+      ],
+      "subject": "{owner}",
+      "listId": "{listId}",
+      "stepId": "{stepId}",
+      "urgent": true,
+      "alwaysNext": true
+    },
+
+    {
+      "source": "bakeryOrder",
+      "at": "requestedAt",
+      "kind": "bakery",
+      "summary": "Asked the bakery to deliver the {item}",
+      "subject": "{userId}",
+      "by": "{userId}",
+      "pastOnly": true
+    },
+    {
+      "source": "bakeryOrder",
+      "at": "confirmsAt",
+      "kind": "bakery",
+      "summary": [
+        "Bakery confirmed the {item} delivery: the courier leaves at ",
+        "{departsAt} and it takes {minutes} minutes, ETA {eta}"
+      ]
+    },
+    {
+      "source": "bakeryOrder",
+      "at": "departsAt",
+      "kind": "bakery",
+      "summary": "The {item} left the bakery, out for delivery, ETA {eta}"
+    },
+    {
+      "source": "bakeryOrder",
+      "at": "eta",
+      "when": "!atTheDoor",
+      "kind": "bakery",
+      "summary": "The {item} is delivered"
+    },
+    {
+      "source": "bakeryOrder",
+      "at": "eta",
+      "when": "atTheDoor",
+      "kind": "bakery",
+      "summary": [
+        "The {item} is delivered: the courier is at the front door. Lead the ",
+        "screen with a HeadsUpCard, variant headsUp, source \"Doorbell\", title ",
+        "\"The {item} is at the front door\", message \"Delivered {eta} ",
+        "from the bakery\", timestamp \"Just now\" and one action, a command ",
+        "that unlocks the front door (deviceId front_door, command unlock) ",
+        "labelled \"Open the door\". Drop the en route card: the order is done"
+      ],
+      "urgent": true
+    },
+    {
+      "source": "bakeryOrder",
+      "at": "now",
+      "when": "waiting",
+      "kind": "bakery",
+      "summary": [
+        "The {item} delivery is {status}: {statusLabel}. Show it as one ",
+        "TripCard on every screen: label \"{itemName} from {bakeryName}\", ",
+        "leaveBy {eta} (the arrival time itself, not a word), tag ",
+        "\"Pending\", progress 0 with icon delivery, the order's statusLabel ",
+        "as the footer, and its two stops ({bakeryName} at {departsAtLabel}, ",
+        "home at {etaLabel})"
+      ],
+      "urgent": true
+    },
+    {
+      "source": "bakeryOrder",
+      "at": "now",
+      "when": "onTheRoad",
+      "kind": "bakery",
+      "summary": [
+        "The {item} is on its way, {progress}% there, {minutesLeft} min left, ",
+        "arrives {eta}. Show it as one en route TripCard: label ",
+        "\"{itemName} from {bakeryName}\", leaveBy {eta} (the arrival ",
+        "time itself, not a word), tag \"In progress\", progress {progress} ",
+        "with icon delivery, the order's statusLabel as the footer, and its ",
+        "two stops ({bakeryName} at {departsAtLabel}, home at {etaLabel})"
+      ],
+      "urgent": true
+    },
+
+    {
+      "source": "trip",
+      "at": "itineraryAt",
+      "kind": "trip",
+      "summary": "{name}'s itinerary: leave by {leaveBy}, {route}",
+      "subject": "{userId}",
+      "tripId": "{tripId}",
+      "itinerary": "itinerary",
+      "urgent": true
+    },
+    {
+      "source": "trip",
+      "at": "now",
+      "when": "homeAfterGuests",
+      "kind": "trip",
+      "summary": [
+        "{name}'s route gets them home after the guests arrive. {notes}",
+        "{droppedStops}"
+      ],
+      "subject": "{userId}",
+      "tripId": "{tripId}",
+      "urgent": true
+    },
+
+    {
+      "source": "calendarEvent",
+      "at": "start",
+      "kind": "calendar",
+      "summary": "{text}",
+      "subject": "{person}"
+    },
+
+    {
+      "source": "doorbell",
+      "at": "pressedAt",
+      "kind": "doorbell",
+      "summary": "{label}",
+      "deviceId": "doorbell"
+    },
+
+    {
+      "source": "change",
+      "at": "at",
+      "kind": "change",
+      "summary": "{text}",
+      "pastOnly": true
+    },
+
+    {
+      "source": "inboxItem",
+      "at": "at",
+      "kind": "inbox",
+      "summary": "{title}",
+      "subject": "{userId}",
+      "by": "{from}",
+      "pastOnly": true
+    }
+  ]
+}

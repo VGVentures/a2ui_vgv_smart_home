@@ -1,0 +1,594 @@
+{
+  "source": "Synthetic data shaped after the Google Home APIs. Calendar, recipe timeline and trips are not Home data and live in their own files.",
+  "timeZone": "America/Chicago",
+  "now": "2026-10-10T16:30:00",
+  "structure": {
+    "id": "structure-rivera-home",
+    "name": "Rivera Home"
+  },
+  "rooms": [
+    {
+      "id": "kitchen",
+      "name": "Kitchen"
+    },
+    {
+      "id": "dining_room",
+      "name": "Dining Room"
+    },
+    {
+      "id": "living_room",
+      "name": "Living Room"
+    },
+    {
+      "id": "garage",
+      "name": "Garage"
+    },
+    {
+      "id": "entry",
+      "name": "Entry"
+    },
+    {
+      "id": "utility",
+      "name": "Utility"
+    },
+    {
+      "id": "upstairs_office",
+      "name": "Upstairs Office"
+    }
+  ],
+  "devices": [
+    {
+      "id": "oven",
+      "name": "Oven",
+      "room": "kitchen",
+      "type": "OvenDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "TemperatureControl": {
+          "temperatureSetpointF": 400,
+          "scheduledStart": "18:00"
+        },
+        "OperationalState": {
+          "state": "stopped"
+        }
+      },
+      "aliases": [
+        "kitchen oven"
+      ]
+    },
+    {
+      "id": "fridge",
+      "name": "Fridge",
+      "room": "kitchen",
+      "type": "RefrigeratorDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "TemperatureMeasurement": {
+          "cabinetTemperatureF": 37
+        },
+        "BooleanState": {
+          "doorOpen": false
+        },
+        "AlarmSettings": {
+          "doorOpenAlarm": "armed"
+        }
+      },
+      "aliases": [
+        "refrigerator"
+      ]
+    },
+    {
+      "id": "kitchen_pendants",
+      "name": "Pendant lights",
+      "room": "kitchen",
+      "type": "DimmableLightDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "OnOff": {
+          "onOff": true
+        },
+        "LevelControl": {
+          "currentLevel": 80
+        }
+      },
+      "aliases": [
+        "kitchen lights",
+        "kitchen"
+      ]
+    },
+    {
+      "id": "range_hood",
+      "name": "Range hood",
+      "room": "kitchen",
+      "type": "ExtractorHoodDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "FanControl": {
+          "fanMode": "off",
+          "percentSetting": 0
+        }
+      },
+      "aliases": [
+        "hood"
+      ]
+    },
+    {
+      "id": "dishwasher",
+      "name": "Dishwasher",
+      "room": "kitchen",
+      "type": "DishwasherDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "OperationalState": {
+          "state": "stopped"
+        },
+        "DishwasherMode": {
+          "mode": "normal"
+        }
+      }
+    },
+    {
+      "id": "table_lights",
+      "name": "Table lights",
+      "room": "dining_room",
+      "type": "ColorTemperatureLightDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "OnOff": {
+          "onOff": true
+        },
+        "LevelControl": {
+          "currentLevel": 100
+        },
+        "ColorControl": {
+          "colorTemperatureKelvin": 4000
+        }
+      },
+      "aliases": [
+        "dining lights",
+        "dining room lights",
+        "table"
+      ]
+    },
+    {
+      "id": "dining_speaker",
+      "name": "Speaker",
+      "room": "dining_room",
+      "type": "SpeakerDevice",
+      "usedBy": [
+        "ana",
+        "sofi"
+      ],
+      "traits": {
+        "OnOff": {
+          "onOff": false
+        },
+        "LevelControl": {
+          "currentLevel": 30
+        },
+        "MediaPlayback": {
+          "state": "stopped",
+          "playlist": null
+        }
+      },
+      "aliases": [
+        "music",
+        "speaker"
+      ]
+    },
+    {
+      "id": "thermostat",
+      "name": "Thermostat",
+      "room": "living_room",
+      "type": "Thermostat",
+      "usedBy": [
+        "ana",
+        "marco"
+      ],
+      "traits": {
+        "Thermostat": {
+          "mode": "heat",
+          "heatSetpointF": 68,
+          "currentTemperatureF": 67
+        }
+      },
+      "aliases": [
+        "living room"
+      ]
+    },
+    {
+      "id": "living_blinds",
+      "name": "Blinds",
+      "room": "living_room",
+      "type": "WindowCovering",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "WindowCovering": {
+          "positionPercentOpen": 100
+        }
+      },
+      "aliases": [
+        "blinds"
+      ]
+    },
+    {
+      "id": "ev_charger",
+      "name": "EV charger",
+      "room": "garage",
+      "type": "EnergyEvseDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "EnergyEvse": {
+          "state": "pluggedInNoDemand",
+          "mode": "scheduled",
+          "scheduledStart": "23:00",
+          "maxPowerKw": 7.2
+        }
+      },
+      "aliases": [
+        "charger",
+        "ev"
+      ]
+    },
+    {
+      "id": "car",
+      "name": "Car",
+      "room": "garage",
+      "type": "GoogleAutoDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "Battery": {
+          "levelPercent": 82,
+          "rangeMiles": 190
+        },
+        "DoorLock": {
+          "lockState": "locked"
+        }
+      },
+      "aliases": [
+        "vehicle"
+      ]
+    },
+    {
+      "id": "garage_door",
+      "name": "Garage door",
+      "room": "garage",
+      "type": "GoogleGarageDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "OpenClose": {
+          "openState": "closed"
+        },
+        "DoorLock": {
+          "lockState": "locked"
+        }
+      },
+      "aliases": [
+        "garage",
+        "garage door opener"
+      ]
+    },
+    {
+      "id": "front_door",
+      "name": "Front door lock",
+      "room": "entry",
+      "type": "DoorLockDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "DoorLock": {
+          "lockState": "locked"
+        }
+      },
+      "aliases": [
+        "door",
+        "door lock",
+        "front door",
+        "lock"
+      ]
+    },
+    {
+      "id": "doorbell",
+      "name": "Doorbell",
+      "room": "entry",
+      "type": "GoogleDoorbellDevice",
+      "usedBy": [
+        "ana",
+        "marco"
+      ],
+      "traits": {
+        "DoorbellPress": {
+          "lastPressAt": null
+        },
+        "CameraStreamLiveView": {
+          "available": true
+        },
+        "MotionDetection": {
+          "lastMotionAt": null
+        }
+      }
+    },
+    {
+      "id": "energy_meter",
+      "name": "Energy meter",
+      "room": "utility",
+      "type": "ElectricalMeterDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "ElectricalPowerMeasurement": {
+          "activePowerKw": 1.4
+        },
+        "ElectricalEnergyMeasurement": {
+          "todayKwh": 12.6,
+          "yesterdayKwh": 31.8
+        },
+        "EnergySaver": {
+          "enabled": false
+        }
+      },
+      "aliases": [
+        "energy",
+        "meter"
+      ]
+    },
+    {
+      "id": "desk_lamp",
+      "name": "Desk lamp",
+      "room": "upstairs_office",
+      "type": "DimmableLightDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "OnOff": {
+          "onOff": true
+        },
+        "LevelControl": {
+          "currentLevel": 60
+        }
+      },
+      "aliases": [
+        "desk",
+        "lamp"
+      ]
+    },
+    {
+      "id": "coffee_maker",
+      "name": "Coffee maker",
+      "room": "kitchen",
+      "type": "CoffeeMakerDevice",
+      "aliases": [
+        "coffee"
+      ],
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "CoffeeMaker": {
+          "state": "idle",
+          "cupsReady": 8,
+          "water": "full",
+          "beans": "loaded"
+        }
+      }
+    },
+    {
+      "id": "dessert_timer",
+      "name": "Dessert timer",
+      "room": "kitchen",
+      "type": "TimerDevice",
+      "aliases": [
+        "timer",
+        "dessert"
+      ],
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "Timer": {
+          "state": "running",
+          "remainingMinutes": 12
+        }
+      }
+    },
+    {
+      "id": "wine_cooler",
+      "name": "Wine cooler",
+      "room": "dining_room",
+      "type": "WineCoolerDevice",
+      "aliases": [
+        "wine"
+      ],
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "TemperatureMeasurement": {
+          "cabinetTemperatureF": 55
+        },
+        "QuickChill": {
+          "state": "idle",
+          "targetF": 46
+        }
+      }
+    },
+    {
+      "id": "office_thermostat",
+      "name": "Office thermostat",
+      "room": "upstairs_office",
+      "type": "Thermostat",
+      "aliases": [
+        "office",
+        "upstairs office"
+      ],
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "Thermostat": {
+          "mode": "heat",
+          "heatSetpointF": 70,
+          "currentTemperatureF": 68
+        }
+      }
+    }
+  ],
+  "groups": [
+    {
+      "id": "downstairs_lights",
+      "name": "Downstairs lights",
+      "rooms": [
+        "kitchen",
+        "dining_room",
+        "living_room"
+      ],
+      "deviceIds": [
+        "kitchen_pendants",
+        "table_lights"
+      ]
+    }
+  ],
+  "automations": [
+    {
+      "id": "dinner_prep",
+      "name": "Dinner prep",
+      "owners": [
+        "ana"
+      ],
+      "starters": [
+        {
+          "type": "time",
+          "at": "18:00"
+        }
+      ],
+      "conditions": [],
+      "actions": [
+        {
+          "deviceId": "oven",
+          "command": "setTemperature",
+          "temperatureF": 400
+        }
+      ]
+    },
+    {
+      "id": "guests_arriving",
+      "name": "Guests arriving",
+      "owners": [
+        "ana"
+      ],
+      "starters": [
+        {
+          "type": "time",
+          "at": "18:45"
+        }
+      ],
+      "conditions": [],
+      "actions": [
+        {
+          "deviceId": "downstairs_lights",
+          "command": "setLevel",
+          "level": 40
+        },
+        {
+          "deviceId": "thermostat",
+          "command": "setHeatSetpoint",
+          "temperatureF": 70
+        },
+        {
+          "deviceId": "dining_speaker",
+          "command": "startPlaylist",
+          "playlist": "Dinner party"
+        }
+      ]
+    },
+    {
+      "id": "charge_for_pickup",
+      "name": "Charge for pickup",
+      "owners": [
+        "marco"
+      ],
+      "starters": [
+        {
+          "type": "deviceState",
+          "deviceId": "car",
+          "trait": "Battery"
+        }
+      ],
+      "conditions": [
+        {
+          "deviceId": "car",
+          "trait": "Battery",
+          "field": "levelPercent",
+          "operator": "lessThan",
+          "value": 60
+        }
+      ],
+      "actions": [
+        {
+          "deviceId": "ev_charger",
+          "command": "startCharging"
+        }
+      ]
+    },
+    {
+      "id": "dinner_party",
+      "name": "Dinner party scene",
+      "kind": "scene",
+      "state": "ready",
+      "aliases": [
+        "dining scene",
+        "dinner party"
+      ],
+      "room": "dining_room",
+      "owners": [
+        "ana"
+      ],
+      "starters": [
+        {
+          "type": "manual"
+        }
+      ],
+      "conditions": [],
+      "actions": [
+        {
+          "deviceId": "downstairs_lights",
+          "command": "setLevel",
+          "level": 40
+        },
+        {
+          "deviceId": "thermostat",
+          "command": "setHeatSetpoint",
+          "temperatureF": 70
+        },
+        {
+          "deviceId": "dining_speaker",
+          "command": "startPlaylist",
+          "playlist": "Dinner jazz"
+        }
+      ]
+    }
+  ]
+}

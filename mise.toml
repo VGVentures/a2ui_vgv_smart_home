@@ -1,0 +1,243 @@
+# Dev tasks. `mise install` pins the tools, `mise run setup` gets a fresh
+# checkout ready, `mise run check` runs everything CI runs, and `mise tasks`
+# lists the rest. mise doesn't install very_good_cli or the Dart Frog CLI; the
+# README's "Run locally" section covers both.
+#
+# Each check mirrors a CI job (format, analyze, tests, the license check and
+# the Markdown spell check) with the same flags and coverage floors. The PR
+# title checks aren't here, since a title only exists once the PR does. CI
+# itself stays on very_good_workflows, which means a floor raised in
+# .github/workflows/ has to be raised here too.
+
+[tools]
+# The one Flutter pin. CI reads it too, through
+# .github/workflows/flutter_version.yaml, so change it here and nowhere else.
+# Dart comes with it.
+flutter = "3.44.9-stable"
+# Only for `npx cspell`.
+node = "24"
+
+[tasks.setup]
+description = "Fetch every package's dependencies"
+depends = ["deps"]
+
+[tasks.check]
+description = "Everything CI runs, minus the PR title checks"
+depends = ["format:check", "analyze", "test", "licenses", "spell"]
+
+# The run tasks need the config files the README's "Run locally" section
+# describes. Neither is checked in and neither holds a key, so each task stops early and names the
+# file rather than letting dart_frog or flutter fail on it later. Both can live
+# once in the directory above the worktree: backend:env copies ../.env and
+# app:config copies ../config.json into any worktree that doesn't have its own.
+#
+# The app serves on :3000 because that is the origin the backend's
+# HOME_CORS_ALLOWED_ORIGINS allows. Set GENUI_APP_PORT to move it when
+# something else holds 3000, and add the new origin to that variable in .env.
+[tasks.dev]
+description = "Run the backend on :8080 in the background and the app in Chrome on :3000 (GENUI_APP_PORT)"
+depends = ["deps", "backend:env", "app:config"]
+# raw passes stdin through, so flutter run's hot-reload keys still work. The
+# backend reads an empty pipe instead: dart_frog puts a terminal into raw mode
+# for its own reload key, and two processes reading one terminal split the
+# keystrokes between them. Not /dev/null, which Dart counts as a terminal on
+# macOS. dart_frog still reloads when a file changes.
+raw = true
+run = '''
+for f in packages/home_backend/.env config.json; do
+  [ -f "$f" ] || { echo "Missing $f. See \"Run locally\" in README.md." >&2; exit 1; }
+done
+# dart_frog is a wrapper three processes above the server that holds :8080,
+# and killing the wrapper orphans the server. Job control gives the backend
+# its own process group, so the trap can stop all of it at once.
+set -m
+true | (cd packages/home_backend && exec dart_frog dev) &
+backend="$(ps -o pgid= -p $! | tr -d ' ')"
+set +m
+trap 'kill -TERM -- "-$backend" 2>/dev/null; wait' EXIT INT TERM
+flutter run -d chrome --web-port "${GENUI_APP_PORT:-3000}" --dart-define-from-file=config.json
+'''
+
+[tasks."dev:backend"]
+description = "Run the backend on :8080 with live reload"
+depends = ["deps", "backend:env"]
+dir = "{{config_root}}/packages/home_backend"
+raw = true
+run = '''
+[ -f .env ] || { echo "Missing packages/home_backend/.env. See \"Run locally\" in README.md." >&2; exit 1; }
+dart_frog dev
+'''
+
+[tasks."dev:app"]
+description = "Run the app in Chrome on :3000 (GENUI_APP_PORT) against config.json"
+depends = ["deps", "app:config"]
+raw = true
+run = '''
+[ -f config.json ] || { echo "Missing config.json. See \"Run locally\" in README.md." >&2; exit 1; }
+flutter run -d chrome --web-port "${GENUI_APP_PORT:-3000}" --dart-define-from-file=config.json
+'''
+
+[tasks."backend:env"]
+hide = true
+description = "Copy ../.env into the backend when this worktree has none"
+# Copies only when the worktree's own .env is missing, so a per-worktree
+# override wins. An edit to ../.env reaches a worktree once its copy is deleted.
+run = '''
+dest=packages/home_backend/.env
+if [ ! -f "$dest" ] && [ -f ../.env ]; then
+  cp ../.env "$dest"
+  echo "Copied ../.env to $dest"
+fi
+'''
+
+[tasks."app:config"]
+hide = true
+description = "Copy ../config.json into the app when this worktree has none"
+# Same rule as backend:env: a per-worktree config.json wins, and an edit to
+# ../config.json reaches a worktree once its copy is deleted.
+run = '''
+dest=config.json
+if [ ! -f "$dest" ] && [ -f ../config.json ]; then
+  cp ../config.json "$dest"
+  echo "Copied ../config.json to $dest"
+fi
+'''
+
+[tasks.deps]
+hide = true
+description = "Fetch dependencies for the app and every package"
+run = [
+  "flutter pub get",
+  "cd packages/app_ui && flutter pub get",
+  "cd packages/home_frontend && flutter pub get",
+  "cd packages/home_catalog && dart pub get",
+  "cd packages/home_timeline && dart pub get",
+  "cd packages/home_api_client && dart pub get",
+  "cd packages/home_repository && dart pub get",
+  "cd packages/home_backend && dart pub get",
+]
+
+# Format and analyze run per package on the paths CI uses. A root-level
+# `dart format .` reaches into packages/, so the root app stays on lib and test.
+[tasks."format:check"]
+description = "Fail if any package has unformatted Dart"
+depends = ["deps"]
+run = [
+  "dart format --set-exit-if-changed lib test",
+  "cd packages/app_ui && dart format --set-exit-if-changed lib test",
+  "cd packages/home_frontend && dart format --set-exit-if-changed lib test",
+  "cd packages/home_catalog && dart format --set-exit-if-changed lib test",
+  "cd packages/home_timeline && dart format --set-exit-if-changed lib test",
+  "cd packages/home_api_client && dart format --set-exit-if-changed lib test",
+  "cd packages/home_repository && dart format --set-exit-if-changed lib test",
+  "cd packages/home_backend && dart format --set-exit-if-changed .",
+]
+
+[tasks.format]
+description = "Format every package's Dart in place"
+depends = ["deps"]
+run = [
+  "dart format lib test",
+  "cd packages/app_ui && dart format lib test",
+  "cd packages/home_frontend && dart format lib test",
+  "cd packages/home_catalog && dart format lib test",
+  "cd packages/home_timeline && dart format lib test",
+  "cd packages/home_api_client && dart format lib test",
+  "cd packages/home_repository && dart format lib test",
+  "cd packages/home_backend && dart format .",
+]
+
+[tasks.analyze]
+description = "Analyze every package, plus bloc lint on the app"
+depends = ["deps"]
+run = [
+  "flutter analyze lib test",
+  "dart run bloc_tools:bloc lint .",
+  "cd packages/app_ui && flutter analyze lib test",
+  "cd packages/home_frontend && flutter analyze lib test",
+  "cd packages/home_catalog && dart analyze --fatal-infos lib test",
+  "cd packages/home_timeline && dart analyze --fatal-infos lib test",
+  "cd packages/home_api_client && dart analyze --fatal-infos lib test",
+  "cd packages/home_repository && dart analyze --fatal-infos lib test",
+  "cd packages/home_backend && dart analyze --fatal-infos .",
+]
+
+# One task per package so mise can run them in parallel. Each floor matches
+# the package's job under .github/workflows/, and the flags match what
+# very_good_workflows passes. The one gap is the Dart SDK: the Dart packages
+# run on the Dart that ships with the pinned Flutter, where CI pins dart_sdk
+# separately.
+[tasks.test]
+description = "Run every package's tests at its CI coverage floor"
+depends = [
+  "test:app",
+  "test:app_ui",
+  "test:frontend",
+  "test:catalog",
+  "test:timeline",
+  "test:api_client",
+  "test:repository",
+  "test:backend",
+]
+
+[tasks."test:app"]
+description = "Test the root app (main.yaml floor)"
+depends = ["deps"]
+run = "very_good test --coverage --min-coverage 100 --report-on lib --test-randomize-ordering-seed random"
+
+[tasks."test:app_ui"]
+description = "Test app_ui (packages.yaml floor)"
+depends = ["deps"]
+dir = "{{config_root}}/packages/app_ui"
+run = "very_good test --coverage --min-coverage 98 --report-on lib --test-randomize-ordering-seed random"
+
+[tasks."test:frontend"]
+description = "Test home_frontend (packages.yaml floor)"
+depends = ["deps"]
+dir = "{{config_root}}/packages/home_frontend"
+run = "very_good test --coverage --min-coverage 96 --report-on lib --test-randomize-ordering-seed random"
+
+[tasks."test:catalog"]
+description = "Test home_catalog (packages.yaml floor)"
+depends = ["deps"]
+dir = "{{config_root}}/packages/home_catalog"
+run = "very_good dart test --coverage --min-coverage 99 --report-on lib --no-check-ignore --test-randomize-ordering-seed random"
+
+[tasks."test:timeline"]
+description = "Test home_timeline (packages.yaml floor)"
+depends = ["deps"]
+dir = "{{config_root}}/packages/home_timeline"
+run = "very_good dart test --coverage --min-coverage 95 --report-on lib --no-check-ignore --test-randomize-ordering-seed random"
+
+[tasks."test:api_client"]
+description = "Test home_api_client (packages.yaml floor)"
+depends = ["deps"]
+dir = "{{config_root}}/packages/home_api_client"
+run = "very_good dart test --coverage --min-coverage 95 --report-on lib --no-check-ignore --test-randomize-ordering-seed random"
+
+[tasks."test:repository"]
+description = "Test home_repository (packages.yaml floor)"
+depends = ["deps"]
+dir = "{{config_root}}/packages/home_repository"
+run = "very_good dart test --coverage --min-coverage 95 --report-on lib --no-check-ignore --test-randomize-ordering-seed random"
+
+[tasks."test:backend"]
+description = "Test home_backend (backend.yaml floor)"
+depends = ["deps"]
+dir = "{{config_root}}/packages/home_backend"
+# The test optimizer breaks coverage for Dart Frog's routes/ layout.
+run = "very_good dart test --no-optimization --coverage --min-coverage 97 --report-on lib --no-check-ignore --test-randomize-ordering-seed random"
+
+[tasks.licenses]
+description = "Check the app's dependency licenses against the allowlist, as license_check.yaml does"
+depends = ["deps"]
+# pubspec_lock_parse is Apache-2.0, but its license file isn't recognized.
+run = "very_good packages check licenses --dependency-type=direct-main,transitive --allowed=MIT,BSD-3-Clause,BSD-2-Clause,Apache-2.0,Zlib --skip-packages=pubspec_lock_parse"
+
+[tasks.spell]
+description = "Spell-check every Markdown file against the VGV dictionaries, as CI does"
+# npx resolves cspell's newest bundled dictionaries, while cspell-action bundles
+# the ones it was released with, so a word new to those dictionaries can pass
+# here and fail in CI (worktree, added in @cspell/dict-git 3.1.1, did). Add such
+# words to .github/cspell.json.
+run = "npx --yes cspell@9 --config .github/cspell.json --no-progress --no-must-find-files '**/*.md'"

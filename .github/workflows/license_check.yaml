@@ -1,0 +1,32 @@
+name: license_check
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "pubspec.yaml"
+      - ".github/workflows/license_check.yaml"
+  push:
+    branches:
+      - main
+    paths:
+      - "pubspec.yaml"
+      - ".github/workflows/license_check.yaml"
+
+jobs:
+  flutter-version:
+    uses: ./.github/workflows/flutter_version.yaml
+
+  license_check:
+    needs: flutter-version
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/license_check.yml@v1.21.0
+    with:
+      flutter_version: ${{ needs.flutter-version.outputs.version }}
+      allowed: "MIT,BSD-3-Clause,BSD-2-Clause,Apache-2.0,Zlib"
+      # Apache-2.0, but its license file is not recognized. Only bloc_lint uses it.
+      skip_packages: "pubspec_lock_parse"
