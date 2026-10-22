@@ -67,7 +67,7 @@ jobs:
 
   home_frontend:
     needs: flutter-version
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.21.0
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v2.0.3
     with:
       working_directory: packages/home_frontend
       flutter_version: ${{ needs.flutter-version.outputs.version }}
@@ -77,7 +77,7 @@ jobs:
 
   app_ui:
     needs: flutter-version
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.21.0
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v2.0.3
     with:
       working_directory: packages/app_ui
       flutter_version: ${{ needs.flutter-version.outputs.version }}

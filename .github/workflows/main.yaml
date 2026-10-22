@@ -21,7 +21,7 @@ jobs:
 
   build:
     needs: flutter-version
-    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.21.0
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v2.0.3
     with:
       flutter_version: ${{ needs.flutter-version.outputs.version }}
       run_bloc_lint: true
