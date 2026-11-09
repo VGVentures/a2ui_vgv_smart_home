@@ -1,0 +1,25 @@
+{
+  "timeZone": "America/Chicago",
+  "steps": [
+    {
+      "userId": "ana",
+      "at": "17:30",
+      "step": "Season and prep the roast"
+    },
+    {
+      "userId": "ana",
+      "at": "18:00",
+      "step": "Preheat the oven to 400 °F"
+    },
+    {
+      "userId": "ana",
+      "at": "18:30",
+      "step": "Roast goes in"
+    },
+    {
+      "userId": "ana",
+      "at": "19:00",
+      "step": "Guests sit down"
+    }
+  ]
+}

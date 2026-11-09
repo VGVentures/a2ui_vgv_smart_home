@@ -1,0 +1,10 @@
+{
+  "source": "Mocked bakery order desk. A delivery order is confirmed one minute after it is requested. The courier leaves the bakery at one of the fixed departure slots and the trip always takes the same time, so the cake arrives at the slot plus the delivery duration.",
+  "name": "Maple & Crumb Bakery",
+  "confirmMinutes": 1,
+  "deliveryMinutes": 25,
+  "deliverySlots": ["17:20"],
+  "defaultSlot": "17:20",
+  "orders": [],
+  "messages": []
+}

@@ -1,0 +1,86 @@
+name: packages
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+# Covers the shared packages. The root app is covered by main.yaml and the
+# backend by backend.yaml. The root flutter_package job only runs in the repo
+# root, so nothing under packages/ was checked before this file.
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/**"
+      - ".github/workflows/packages.yaml"
+      - "mise.toml"
+      - ".github/workflows/flutter_version.yaml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/**"
+      - ".github/workflows/packages.yaml"
+      - "mise.toml"
+      - ".github/workflows/flutter_version.yaml"
+
+jobs:
+  flutter-version:
+    uses: ./.github/workflows/flutter_version.yaml
+
+  home_catalog:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    with:
+      working_directory: packages/home_catalog
+      dart_sdk: "3.12.1"
+      run_bloc_lint: false
+      # Today 99.75. Raise as gaps close, never lower.
+      min_coverage: 99
+
+  home_timeline:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    with:
+      working_directory: packages/home_timeline
+      dart_sdk: "3.12.1"
+      run_bloc_lint: false
+      # Today 98. Raise as gaps close, never lower.
+      min_coverage: 95
+
+  home_api_client:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    with:
+      working_directory: packages/home_api_client
+      dart_sdk: "3.12.1"
+      run_bloc_lint: false
+      # New package. Raise as gaps close, never lower.
+      min_coverage: 95
+
+  home_repository:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    with:
+      working_directory: packages/home_repository
+      dart_sdk: "3.12.1"
+      run_bloc_lint: false
+      # Moved from the app with its tests. Raise as gaps close, never lower.
+      min_coverage: 95
+
+  home_frontend:
+    needs: flutter-version
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.21.0
+    with:
+      working_directory: packages/home_frontend
+      flutter_version: ${{ needs.flutter-version.outputs.version }}
+      run_bloc_lint: false
+      # Today 96.7. Raise as gaps close, never lower.
+      min_coverage: 96
+
+  app_ui:
+    needs: flutter-version
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/flutter_package.yml@v1.21.0
+    with:
+      working_directory: packages/app_ui
+      flutter_version: ${{ needs.flutter-version.outputs.version }}
+      run_bloc_lint: false
+      # Today 98.29. Raise as gaps close, never lower.
+      min_coverage: 98

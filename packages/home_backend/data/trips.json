@@ -1,0 +1,43 @@
+{
+  "source": "Google Maps",
+  "timeZone": "America/Chicago",
+  "trips": [
+    {
+      "id": "trip_pickup",
+      "userId": "marco",
+      "title": "Piano lesson pickup, then bakery",
+      "plannedStops": [
+        {
+          "name": "Piano lesson pickup",
+          "calendarEventId": "cal_piano",
+          "driveMinutes": 20,
+          "miles": 9,
+          "homeAfterMinutes": 15,
+          "homeAfterMaxMinutes": 30
+        },
+        {
+          "name": "Bakery",
+          "calendarEventId": "cal_cake",
+          "driveMinutes": 15,
+          "miles": 6,
+          "droppedWhenDelivered": true,
+          "note": "Saturday queue at the bakery",
+          "homeAfterMinutes": 45,
+          "homeAfterMaxMinutes": 60
+        }
+      ],
+      "home": {
+        "driveMinutes": 20,
+        "miles": 9
+      },
+      "leaveBy": "2026-10-10T16:55:00",
+      "stops": [],
+      "totalMiles": 0,
+      "rangeCheck": {},
+      "homeAfterGuestsArrive": false,
+      "notes": [],
+      "plannedTitle": "Piano lesson pickup, then bakery",
+      "deliveredTitle": "Piano lesson pickup, then home (the bakery delivers the cake)"
+    }
+  ]
+}

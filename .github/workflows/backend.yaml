@@ -1,0 +1,41 @@
+name: home_backend
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/home_backend/**"
+      - "packages/home_catalog/**"
+      - "packages/home_timeline/**"
+      - ".github/workflows/backend.yaml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "packages/home_backend/**"
+      - "packages/home_catalog/**"
+      - "packages/home_timeline/**"
+      - ".github/workflows/backend.yaml"
+
+jobs:
+  ci:
+    uses: VeryGoodOpenSource/very_good_workflows/.github/workflows/dart_package.yml@v1.21.0
+    with:
+      working_directory: packages/home_backend
+      dart_sdk: "3.12.1"
+      run_bloc_lint: false
+      # "." rather than the "lib test" default so routes/ and main.dart are
+      # covered too.
+      analyze_directories: "."
+      format_directories: "."
+      # The test optimizer bundles tests into one suite, which breaks coverage
+      # collection for Dart Frog's routes/ layout.
+      test_optimization: false
+      # The package targets 100 but sits near 98 today, with the gap in auth
+      # and logging. Raise this as those get tests, never lower it.
+      min_coverage: 97

@@ -1,0 +1,69 @@
+{
+  "household": "Rivera Home",
+  "users": [
+    {
+      "id": "ana",
+      "name": "Ana",
+      "age": 41,
+      "role": "Host",
+      "optional": false,
+      "story": "Planning and cooking tonight's rack of lamb for 6 guests.",
+      "caresAbout": [
+        "timing",
+        "food",
+        "ambience",
+        "guests feeling welcome"
+      ],
+      "dashboardLeadsWith": [
+        "Dinner countdown",
+        "Oven and fridge status",
+        "Dining room scene",
+        "Guest arrivals"
+      ],
+      "contextSignals": [
+        "Calendar event \"Dinner party\"",
+        "Recipe timeline",
+        "Oven schedule",
+        "Fridge door state",
+        "Shopping list"
+      ],
+      "deviceTypes": [
+        "OvenDevice",
+        "RefrigeratorDevice",
+        "ColorTemperatureLightDevice",
+        "SpeakerDevice",
+        "Thermostat"
+      ]
+    },
+    {
+      "id": "marco",
+      "name": "Marco",
+      "age": 43,
+      "role": "Logistics",
+      "optional": false,
+      "story": "Picks up the piano lesson, grabs the cake from the bakery and works from the upstairs office. Where he has to be, and when, is what he needs to see first.",
+      "caresAbout": [
+        "where he has to be and when",
+        "getting places on time",
+        "car charge"
+      ],
+      "dashboardLeadsWith": [
+        "Itinerary: leave-by time, every stop with its time and his calendar",
+        "Cake delivery",
+        "Car charge and range"
+      ],
+      "contextSignals": [
+        "Calendar pickup slots",
+        "Trip route",
+        "Car battery",
+        "Bakery order"
+      ],
+      "deviceTypes": [
+        "GoogleAutoDevice",
+        "DoorLockDevice",
+        "GoogleDoorbellDevice",
+        "Thermostat"
+      ]
+    }
+  ]
+}

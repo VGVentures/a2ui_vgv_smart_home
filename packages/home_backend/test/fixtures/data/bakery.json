@@ -1,0 +1,10 @@
+{
+  "source": "Mocked bakery order desk. A delivery order is confirmed one minute after it is requested. The courier leaves the bakery at one of the fixed departure slots and the trip always takes the same time, so the cake arrives at the slot plus the delivery duration.",
+  "name": "Bakery",
+  "confirmMinutes": 1,
+  "deliveryMinutes": 15,
+  "deliverySlots": ["17:10", "17:25", "17:40"],
+  "defaultSlot": "17:25",
+  "orders": [],
+  "messages": []
+}

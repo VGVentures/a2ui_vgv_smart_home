@@ -1,0 +1,53 @@
+{
+  "source": "Synthetic to-do lists. Not Google Home data.",
+  "lists": [
+    {
+      "id": "shopping",
+      "title": "Shopping for tonight",
+      "subtitle": "Missing from the fridge · dinner for 6",
+      "owners": [
+        "ana"
+      ],
+      "shareTarget": "marco",
+      "sharedWith": [],
+      "items": [
+        {
+          "id": "ribs",
+          "label": "Short ribs",
+          "detail": "4 lb · bone-in",
+          "checked": false
+        },
+        {
+          "id": "cream",
+          "label": "Heavy cream",
+          "detail": "1 pint",
+          "checked": false
+        },
+        {
+          "id": "shallots",
+          "label": "Shallots",
+          "detail": "6",
+          "checked": true
+        },
+        {
+          "id": "thyme",
+          "label": "Fresh thyme",
+          "detail": "1 bunch",
+          "checked": true
+        },
+        {
+          "id": "wine",
+          "label": "Red wine",
+          "detail": "2 bottles",
+          "checked": false
+        },
+        {
+          "id": "baguette",
+          "label": "Baguette",
+          "detail": "2",
+          "checked": false
+        }
+      ]
+    }
+  ]
+}

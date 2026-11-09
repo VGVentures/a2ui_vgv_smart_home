@@ -1,0 +1,84 @@
+{
+  "household": "Rivera Home",
+  "users": [
+    {
+      "id": "ana",
+      "name": "Ana",
+      "age": 41,
+      "role": "Host",
+      "optional": false,
+      "story": "Planning and cooking tonight's dinner for 6 guests at 7:00 PM.",
+      "caresAbout": ["timing", "food", "ambience", "guests feeling welcome"],
+      "dashboardLeadsWith": [
+        "Dinner countdown",
+        "Oven and fridge status",
+        "Dining room scene",
+        "Guest arrivals"
+      ],
+      "contextSignals": [
+        "Calendar event \"Dinner party\"",
+        "Recipe timeline",
+        "Oven schedule",
+        "Fridge door state"
+      ],
+      "deviceTypes": [
+        "OvenDevice",
+        "RefrigeratorDevice",
+        "DimmableLightDevice",
+        "ExtractorHoodDevice",
+        "DishwasherDevice",
+        "ColorTemperatureLightDevice",
+        "SpeakerDevice",
+        "WindowCovering",
+        "Thermostat"
+      ]
+    },
+    {
+      "id": "marco",
+      "name": "Marco",
+      "age": 43,
+      "role": "Logistics",
+      "optional": false,
+      "story": "Picks up the kids, grabs the cake and works from the upstairs office.",
+      "caresAbout": ["getting places on time", "car charge", "energy cost", "security"],
+      "dashboardLeadsWith": [
+        "Car charge and range",
+        "School pickup ETA",
+        "Errand route",
+        "Energy use today"
+      ],
+      "contextSignals": [
+        "EV charger state",
+        "Car battery",
+        "Calendar pickup slot",
+        "Electrical meter",
+        "Front door lock"
+      ],
+      "deviceTypes": [
+        "EnergyEvseDevice",
+        "GoogleAutoDevice",
+        "GoogleGarageDevice",
+        "DoorLockDevice",
+        "ElectricalMeterDevice",
+        "DimmableLightDevice",
+        "Thermostat"
+      ]
+    },
+    {
+      "id": "sofi",
+      "name": "Sofi",
+      "age": 9,
+      "role": "Kid",
+      "optional": true,
+      "story": "Wants to help and is curious about the party.",
+      "caresAbout": ["fun tasks", "her playlist", "when friends arrive"],
+      "dashboardLeadsWith": [
+        "One playful task card",
+        "Speaker control",
+        "Guests in countdown"
+      ],
+      "contextSignals": ["Profile age", "Speaker", "Living room lights"],
+      "deviceTypes": ["SpeakerDevice", "DimmableLightDevice"]
+    }
+  ]
+}

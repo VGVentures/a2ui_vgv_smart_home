@@ -1,0 +1,13 @@
+name: home_timeline
+description: >-
+  The demo's timeline: the scenario clock and the activity feed, whose moments
+  are declared in JSON.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.12.0
+
+dev_dependencies:
+  test: ^1.25.6
+  very_good_analysis: ^10.1.0

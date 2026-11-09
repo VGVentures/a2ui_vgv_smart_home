@@ -1,0 +1,276 @@
+{
+  "source": "Synthetic data shaped after the Google Home APIs. Calendar, recipe timeline, trips, bakery and the energy tariff are not Home data and live in their own files. Values derived from the scenario clock (oven, car climate, doorbell) are recomputed by the scenario engine.",
+  "timeZone": "America/Chicago",
+  "now": "2026-10-10T07:30:00",
+  "structure": {
+    "id": "structure-rivera-home",
+    "name": "Rivera Home"
+  },
+  "rooms": [
+    {
+      "id": "kitchen",
+      "name": "Kitchen"
+    },
+    {
+      "id": "dining_room",
+      "name": "Dining Room"
+    },
+    {
+      "id": "living_room",
+      "name": "Living Room"
+    },
+    {
+      "id": "garage",
+      "name": "Garage"
+    },
+    {
+      "id": "entry",
+      "name": "Entry"
+    },
+    {
+      "id": "utility",
+      "name": "Utility"
+    }
+  ],
+  "devices": [
+    {
+      "id": "oven",
+      "name": "Oven",
+      "room": "kitchen",
+      "type": "OvenDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "TemperatureControl": {
+          "temperatureSetpointF": 400,
+          "scheduledStart": "18:30",
+          "currentTemperatureF": 72
+        },
+        "OperationalState": {
+          "state": "stopped",
+          "statusLabel": "Off"
+        },
+        "CookSchedule": {
+          "recipe": "Rack of lamb",
+          "preheatMinutes": 14,
+          "roastInAt": "18:45",
+          "cookMinutes": 25,
+          "previousPreheatStart": null,
+          "readyAt": null,
+          "doneAt": null,
+          "remainingMinutes": null
+        }
+      },
+      "aliases": [
+        "kitchen oven"
+      ]
+    },
+    {
+      "id": "fridge",
+      "name": "Fridge",
+      "room": "kitchen",
+      "type": "RefrigeratorDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "TemperatureMeasurement": {
+          "cabinetTemperatureF": 37
+        },
+        "BooleanState": {
+          "doorOpen": false
+        },
+        "AlarmSettings": {
+          "doorOpenAlarm": "armed"
+        }
+      },
+      "aliases": [
+        "refrigerator"
+      ]
+    },
+    {
+      "id": "table_lights",
+      "name": "Dining Room lights",
+      "room": "dining_room",
+      "type": "ColorTemperatureLightDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "OnOff": {
+          "onOff": true
+        },
+        "LevelControl": {
+          "currentLevel": 100
+        },
+        "ColorControl": {
+          "colorTemperatureKelvin": 4000
+        }
+      },
+      "aliases": [
+        "dining lights",
+        "dining room lights",
+        "lights",
+        "table"
+      ]
+    },
+    {
+      "id": "dining_speaker",
+      "name": "Speaker",
+      "room": "dining_room",
+      "type": "SpeakerDevice",
+      "usedBy": [
+        "ana"
+      ],
+      "traits": {
+        "OnOff": {
+          "onOff": false
+        },
+        "LevelControl": {
+          "currentLevel": 30
+        },
+        "MediaPlayback": {
+          "state": "stopped",
+          "playlist": null
+        }
+      },
+      "aliases": [
+        "music",
+        "speaker"
+      ]
+    },
+    {
+      "id": "thermostat",
+      "name": "Thermostat",
+      "room": "living_room",
+      "type": "Thermostat",
+      "usedBy": [
+        "ana",
+        "marco"
+      ],
+      "traits": {
+        "Thermostat": {
+          "mode": "heat",
+          "heatSetpointF": 68,
+          "currentTemperatureF": 67
+        }
+      },
+      "aliases": [
+        "living room"
+      ]
+    },
+    {
+      "id": "car",
+      "name": "Car",
+      "room": "garage",
+      "type": "GoogleAutoDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "Battery": {
+          "levelPercent": 82,
+          "rangeMiles": 190
+        },
+        "DoorLock": {
+          "lockState": "locked"
+        },
+        "Climate": {
+          "state": "off",
+          "startAt": null
+        }
+      },
+      "aliases": [
+        "vehicle"
+      ]
+    },
+    {
+      "id": "front_door",
+      "name": "Front door lock",
+      "room": "entry",
+      "type": "DoorLockDevice",
+      "usedBy": [
+        "marco"
+      ],
+      "traits": {
+        "DoorLock": {
+          "lockState": "locked"
+        }
+      },
+      "aliases": [
+        "door",
+        "door lock",
+        "front door",
+        "lock"
+      ]
+    },
+    {
+      "id": "doorbell",
+      "name": "Doorbell",
+      "room": "entry",
+      "type": "GoogleDoorbellDevice",
+      "usedBy": [
+        "ana",
+        "marco"
+      ],
+      "traits": {
+        "DoorbellPress": {
+          "lastPressAt": null
+        },
+        "CameraStreamLiveView": {
+          "available": true
+        },
+        "MotionDetection": {
+          "lastMotionAt": null
+        },
+        "DoorbellEvent": {
+          "kind": null,
+          "label": null,
+          "at": null,
+          "handledBy": null
+        }
+      }
+    }
+  ],
+  "groups": [],
+  "automations": [
+    {
+      "id": "dinner_party",
+      "name": "Dinner party scene",
+      "kind": "scene",
+      "state": "ready",
+      "aliases": [
+        "dining scene",
+        "dinner party"
+      ],
+      "room": "dining_room",
+      "owners": [
+        "ana"
+      ],
+      "starters": [
+        {
+          "type": "manual"
+        }
+      ],
+      "conditions": [],
+      "actions": [
+        {
+          "deviceId": "table_lights",
+          "command": "setLevel",
+          "level": 40
+        },
+        {
+          "deviceId": "thermostat",
+          "command": "setHeatSetpoint",
+          "temperatureF": 70
+        },
+        {
+          "deviceId": "dining_speaker",
+          "command": "startPlaylist",
+          "playlist": "Dinner party"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+{
+  "source": "Google Calendar",
+  "timeZone": "America/Chicago",
+  "events": [
+    {
+      "id": "cal_dinner",
+      "userId": "ana",
+      "title": "Dinner party",
+      "kind": "guests_arrive",
+      "start": "2026-10-10T19:00:00",
+      "end": "2026-10-10T22:30:00",
+      "guests": 6,
+      "status": "confirmed",
+      "assignedTo": [
+        "ana",
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_piano",
+      "userId": "marco",
+      "title": "Piano lesson pickup",
+      "start": "2026-10-10T17:15:00",
+      "end": "2026-10-10T17:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_cake",
+      "userId": "marco",
+      "title": "Bakery cake pickup",
+      "start": "2026-10-10T17:45:00",
+      "end": "2026-10-10T18:00:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_market",
+      "userId": "ana",
+      "title": "Farmers market run",
+      "detail": "Thyme, lemons and flowers for tonight",
+      "start": "2026-10-10T08:30:00",
+      "end": "2026-10-10T09:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_standup",
+      "userId": "marco",
+      "title": "Team stand-up",
+      "detail": "From the upstairs office",
+      "start": "2026-10-10T09:00:00",
+      "end": "2026-10-10T09:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_florist",
+      "userId": "ana",
+      "title": "Florist drop-off",
+      "detail": "Table flowers at the front door",
+      "start": "2026-10-10T16:00:00",
+      "end": "2026-10-10T16:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_table",
+      "userId": "ana",
+      "title": "Set the table",
+      "detail": "Places for 8, candles in the middle",
+      "start": "2026-10-10T17:00:00",
+      "end": "2026-10-10T17:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_ice",
+      "userId": "ana",
+      "title": "Chill the drinks",
+      "detail": "Sparkling water and white wine on ice",
+      "start": "2026-10-10T17:55:00",
+      "end": "2026-10-10T18:05:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_chairs",
+      "userId": "ana",
+      "title": "Neighbors bring folding chairs",
+      "detail": "Two chairs from next door",
+      "start": "2026-10-10T18:10:00",
+      "end": "2026-10-10T18:20:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_dessert",
+      "userId": "ana",
+      "title": "Dessert and coffee",
+      "detail": "Tiramisu and espresso for 8",
+      "start": "2026-10-10T20:45:00",
+      "end": "2026-10-10T21:15:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_wind_down",
+      "userId": "ana",
+      "title": "Wind down the music",
+      "detail": "Lower the volume for conversation",
+      "start": "2026-10-10T21:30:00",
+      "end": "2026-10-10T21:45:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_cleanup",
+      "userId": "ana",
+      "title": "Dishwasher and cleanup",
+      "detail": "Run the dishwasher after the guests leave",
+      "start": "2026-10-10T22:30:00",
+      "end": "2026-10-10T23:00:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_breakfast",
+      "userId": "ana",
+      "title": "Breakfast together",
+      "detail": "Coffee and eggs on the patio",
+      "start": "2026-10-10T07:30:00",
+      "end": "2026-10-10T08:10:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana",
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_yoga",
+      "userId": "ana",
+      "title": "Morning yoga",
+      "detail": "Twenty minutes on the mat in the living room",
+      "start": "2026-10-10T08:00:00",
+      "end": "2026-10-10T08:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_run",
+      "userId": "marco",
+      "title": "Morning run",
+      "detail": "Easy loop around the park",
+      "start": "2026-10-10T07:40:00",
+      "end": "2026-10-10T08:20:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_reading",
+      "userId": "ana",
+      "title": "Reading hour",
+      "detail": "Finish the book club chapter",
+      "start": "2026-10-10T09:45:00",
+      "end": "2026-10-10T10:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_course",
+      "userId": "marco",
+      "title": "Online course",
+      "detail": "Module 4 of the Spanish course",
+      "start": "2026-10-10T10:00:00",
+      "end": "2026-10-10T11:30:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_lunch",
+      "userId": "ana",
+      "title": "Lunch",
+      "detail": "Leftover pasta and salad",
+      "start": "2026-10-10T12:30:00",
+      "end": "2026-10-10T13:15:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana",
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_walk",
+      "userId": "ana",
+      "title": "Walk the dog",
+      "start": "2026-10-10T13:30:00",
+      "end": "2026-10-10T14:00:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana",
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_garage",
+      "userId": "marco",
+      "title": "Tidy the garage",
+      "detail": "Clear a corner for the cake boxes",
+      "start": "2026-10-10T14:15:00",
+      "end": "2026-10-10T15:00:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "marco"
+      ]
+    },
+    {
+      "id": "cal_prep_cook",
+      "userId": "ana",
+      "title": "Prep the marinade",
+      "detail": "Herbs and garlic for the lamb",
+      "start": "2026-10-10T14:30:00",
+      "end": "2026-10-10T15:15:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "ana"
+      ]
+    },
+    {
+      "id": "cal_shower",
+      "userId": "marco",
+      "title": "Shower and get ready",
+      "start": "2026-10-10T15:30:00",
+      "end": "2026-10-10T16:00:00",
+      "status": "confirmed",
+      "assignedTo": [
+        "marco"
+      ]
+    }
+  ]
+}
